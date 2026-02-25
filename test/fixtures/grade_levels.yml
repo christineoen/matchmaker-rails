@@ -1,0 +1,14 @@
+grade1_riverside:
+  club: riverside
+  name: Grade 1
+  rank: 1
+
+grade2_riverside:
+  club: riverside
+  name: Grade 2
+  rank: 2
+
+grade1_harbour:
+  club: harbour
+  name: Grade 1
+  rank: 1

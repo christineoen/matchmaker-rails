@@ -1,0 +1,9 @@
+alice_riverside:
+  user: alice
+  club: riverside
+  role: 1
+
+bob_riverside:
+  user: bob
+  club: riverside
+  role: 0
