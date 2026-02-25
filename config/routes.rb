@@ -9,4 +9,6 @@ Rails.application.routes.draw do
   resources :clubs
 
   get "up" => "rails/health#show", as: :rails_health_check
+
+  root "clubs#index"
 end

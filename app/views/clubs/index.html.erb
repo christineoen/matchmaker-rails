@@ -1,0 +1,15 @@
+<div class="w-full">
+  <h1 class="font-bold text-4xl mb-6">Your clubs</h1>
+
+  <% if @clubs.any? %>
+    <ul class="divide-y divide-gray-200 border border-gray-200 rounded-lg">
+      <% @clubs.each do |club| %>
+        <li class="px-5 py-4">
+          <span class="font-medium text-gray-900"><%= club.name %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-gray-500">You're not a member of any clubs yet.</p>
+  <% end %>
+</div>
