@@ -1,9 +1,7 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+riverside:
+  name: Riverside Tennis Club
+  slug: riverside-tennis
 
-one:
-  name: MyString
-  slug: MyString
-
-two:
-  name: MyString
-  slug: MyString
+harbour:
+  name: Harbour Tennis Club
+  slug: harbour-tennis

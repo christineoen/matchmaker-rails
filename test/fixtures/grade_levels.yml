@@ -1,11 +1,14 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  club: one
-  name: MyString
+grade1_riverside:
+  club: riverside
+  name: Grade 1
   rank: 1
 
-two:
-  club: two
-  name: MyString
+grade2_riverside:
+  club: riverside
+  name: Grade 2
+  rank: 2
+
+grade1_harbour:
+  club: harbour
+  name: Grade 1
   rank: 1

@@ -1,13 +1,17 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  club: one
-  name: MyString
-  surface: MyString
+court1_riverside:
+  club: riverside
+  name: "1"
+  surface: grass
   position: 1
 
-two:
-  club: two
-  name: MyString
-  surface: MyString
+court2_riverside:
+  club: riverside
+  name: "2"
+  surface: grass
+  position: 2
+
+court1_harbour:
+  club: harbour
+  name: "1"
+  surface: hard
   position: 1
