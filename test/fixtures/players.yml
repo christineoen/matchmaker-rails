@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  club: one
+  user: one
+  first_name: MyString
+  last_name: MyString
+  gender: 1
+  grade_level: one
+  plus_minus: 1
+
+two:
+  club: two
+  user: two
+  first_name: MyString
+  last_name: MyString
+  gender: 1
+  grade_level: two
+  plus_minus: 1

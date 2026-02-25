@@ -1,0 +1,122 @@
+│ MatchPoint Rails — Foundation Models                                                                                                                                  │
+│                                                                                                                                                                       │
+│ Context                                                                                                                                                               │
+│                                                                                                                                                                       │
+│ Building a Rails app to replace a 10,000-line HTML file for social tennis doubles match generation. This phase establishes the foundational data models for           │
+│ multi-tenant club management, user authentication, and club data (players, courts, skill levels). Match generation logic comes later.                                 │
+│                                                                                                                                                                       │
+│ Models                                                                                                                                                                │
+│                                                                                                                                                                       │
+│ 1. User & Session (via rails generate authentication)                                                                                                                 │
+│                                                                                                                                                                       │
+│ Rails 8's built-in auth gives us User (email_address, password_digest), Session, and Current. We'll extend User with:                                                 │
+│                                                                                                                                                                       │
+│ users                                                                                                                                                                 │
+│ ├── email_address:string (not null, unique) — from auth                                                                                                               │
+│ ├── password_digest:string (not null) — from auth                                                                                                                     │
+│ ├── first_name:string (not null)                                                                                                                                      │
+│ └── last_name:string (not null)                                                                                                                                       │
+│                                                                                                                                                                       │
+│ 2. Club                                                                                                                                                               │
+│                                                                                                                                                                       │
+│ Top-level tenant. Each club manages their own players, courts, and rules.                                                                                             │
+│                                                                                                                                                                       │
+│ clubs                                                                                                                                                                 │
+│ ├── name:string (not null)                                                                                                                                            │
+│ └── slug:string (not null, unique) — auto-generated from name, used in URLs                                                                                           │
+│                                                                                                                                                                       │
+│ 3. Membership (User ↔ Club join)                                                                                                                                      │
+│                                                                                                                                                                       │
+│ A user can belong to multiple clubs with different roles.                                                                                                             │
+│                                                                                                                                                                       │
+│ memberships                                                                                                                                                           │
+│ ├── user:references (not null, FK)                                                                                                                                    │
+│ ├── club:references (not null, FK)                                                                                                                                    │
+│ └── role:integer (not null, default: 0) — enum {member: 0, admin: 1}                                                                                                  │
+│ unique index on [user_id, club_id]                                                                                                                                    │
+│                                                                                                                                                                       │
+│ 4. GradeLevel (club-configurable skill tiers)                                                                                                                         │
+│                                                                                                                                                                       │
+│ Replaces the hardcoded 5-level system. Each club defines their own.                                                                                                   │
+│                                                                                                                                                                       │
+│ grade_levels                                                                                                                                                          │
+│ ├── club:references (not null, FK)                                                                                                                                    │
+│ ├── name:string (not null) — display name, e.g. "Grade 2", "A", "Beginner"                                                                                            │
+│ └── rank:integer (not null) — numeric ordering, higher = stronger                                                                                                     │
+│ unique index on [club_id, rank]                                                                                                                                       │
+│ unique index on [club_id, name]                                                                                                                                       │
+│                                                                                                                                                                       │
+│ 5. Player (club member profile)                                                                                                                                       │
+│                                                                                                                                                                       │
+│ A player belongs to a club, and optionally links to a User account. Players without accounts are managed by admins.                                                   │
+│                                                                                                                                                                       │
+│ players                                                                                                                                                               │
+│ ├── club:references (not null, FK)                                                                                                                                    │
+│ ├── user:references (nullable, FK) — linked account, if any                                                                                                           │
+│ ├── first_name:string (not null)                                                                                                                                      │
+│ ├── last_name:string (not null)                                                                                                                                       │
+│ ├── gender:integer (not null) — enum {male: 0, female: 1}                                                                                                             │
+│ ├── grade_level:references (nullable, FK)                                                                                                                             │
+│ └── plus_minus:integer (default: 0) — enum {minus: -1, neutral: 0, plus: 1}                                                                                           │
+│ unique index on [club_id, user_id] where user_id is not null                                                                                                          │
+│                                                                                                                                                                       │
+│ 6. Court                                                                                                                                                              │
+│                                                                                                                                                                       │
+│ Club's courts with configurable surface types.                                                                                                                        │
+│                                                                                                                                                                       │
+│ courts                                                                                                                                                                │
+│ ├── club:references (not null, FK)                                                                                                                                    │
+│ ├── name:string (not null) — e.g. "1", "H1", "Court A"                                                                                                                │
+│ ├── surface:string (not null) — e.g. "grass", "hard", "clay"                                                                                                          │
+│ └── position:integer (not null) — display/default ordering                                                                                                            │
+│ unique index on [club_id, name]                                                                                                                                       │
+│                                                                                                                                                                       │
+│ Implementation Steps                                                                                                                                                  │
+│                                                                                                                                                                       │
+│ Step 1: Run Rails 8 auth generator                                                                                                                                    │
+│                                                                                                                                                                       │
+│ - bin/rails generate authentication                                                                                                                                   │
+│ - Before migrating, edit the Users migration to add first_name and last_name columns                                                                                  │
+│                                                                                                                                                                       │
+│ Step 2: Generate remaining models                                                                                                                                     │
+│                                                                                                                                                                       │
+│ - bin/rails generate model Club name:string slug:string                                                                                                               │
+│ - bin/rails generate model Membership user:references club:references role:integer                                                                                    │
+│ - bin/rails generate model GradeLevel club:references name:string rank:integer                                                                                        │
+│ - bin/rails generate model Player club:references user:references first_name:string last_name:string gender:integer grade_level:references plus_minus:integer         │
+│ - bin/rails generate model Court club:references name:string surface:string position:integer                                                                          │
+│                                                                                                                                                                       │
+│ Step 3: Edit migrations to add constraints                                                                                                                            │
+│                                                                                                                                                                       │
+│ - Add null: false, defaults, and unique indexes as specified above                                                                                                    │
+│ - Make user_id on Player nullable (override the default null: false from references)                                                                                  │
+│                                                                                                                                                                       │
+│ Step 4: Run migrations                                                                                                                                                │
+│                                                                                                                                                                       │
+│ - bin/rails db:migrate                                                                                                                                                │
+│                                                                                                                                                                       │
+│ Step 5: Add model code                                                                                                                                                │
+│                                                                                                                                                                       │
+│ - User: Add has_many :memberships, has_many :clubs, through: :memberships, has_many :players, validations                                                             │
+│ - Club: Add has_many :memberships, has_many :users, through: :memberships, has_many :players, has_many :courts, has_many :grade_levels. Add slug generation callback. │
+│ - Membership: Add enum :role, validations, uniqueness constraint                                                                                                      │
+│ - GradeLevel: Add validations, has_many :players, scopes for ordering                                                                                                 │
+│ - Player: Add enum :gender, enum :plus_minus, validations, full_name method                                                                                           │
+│ - Court: Add validations, default scope for position ordering                                                                                                         │
+│                                                                                                                                                                       │
+│ Step 6: Add seed data                                                                                                                                                 │
+│                                                                                                                                                                       │
+│ - Create a sample club with grade levels, courts, and players for development                                                                                         │
+│                                                                                                                                                                       │
+│ Step 7: Add basic routes                                                                                                                                              │
+│                                                                                                                                                                       │
+│ - resource :session and resources :passwords, param: :token (from auth)                                                                                               │
+│ - resources :clubs (nested or top-level)                                                                                                                              │
+│ - Registration route for new users                                                                                                                                    │
+│                                                                                                                                                                       │
+│ Verification                                                                                                                                                          │
+│                                                                                                                                                                       │
+│ 1. bin/rails db:migrate succeeds                                                                                                                                      │
+│ 2. bin/rails test passes (model tests)                                                                                                                                │
+│ 3. bin/rails console — create a club, users, memberships, players, courts, grade levels and verify associations work                                                  │
+│ 4. bin/rails db:seed populates sample data  

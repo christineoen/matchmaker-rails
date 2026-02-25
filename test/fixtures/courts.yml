@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  club: one
+  name: MyString
+  surface: MyString
+  position: 1
+
+two:
+  club: two
+  name: MyString
+  surface: MyString
+  position: 1
