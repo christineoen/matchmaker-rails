@@ -69,16 +69,16 @@ class MatchGenerator
 
     sit_count = available.count - playing_capacity
 
-    # Players who sat out last round get lower sit-out priority (should play)
+    # Players who played last round get higher sit-out priority
     last_round = @event.rounds.order(number: :desc).first
 
     sorted = available.shuffle.sort_by do |ep|
       if last_round.nil?
         0
       elsif last_round.match_players.exists?(player_id: ep.player_id)
-        0  # played last round → lower sit-out priority (should play again)
+        1  # played last round → higher sit-out priority
       else
-        1  # sat out last round → higher sit-out priority (should sit again)
+        0  # sat out last round → lower sit-out priority (should play)
       end
     end
 
