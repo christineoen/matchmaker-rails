@@ -18,7 +18,7 @@
       <tbody class="divide-y divide-gray-100">
         <% @courts.each do |court| %>
           <tr>
-            <td class="py-2 pr-4 font-medium text-gray-900">Court <%= court.name %></td>
+            <td class="py-2 pr-4 font-medium text-gray-900"><%= court.name %></td>
             <td class="py-2 text-gray-600 capitalize"><%= court.surface %></td>
             <td class="py-2 text-right space-x-3">
               <%= link_to "Edit", edit_club_court_path(@club, court), class: "text-blue-600 hover:text-blue-500" %>

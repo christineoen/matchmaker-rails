@@ -69,16 +69,16 @@ class MatchGenerator
 
     sit_count = available.count - playing_capacity
 
-    # Players who played last round (did NOT sit out) get higher sit-out priority
+    # Players who sat out last round get lower sit-out priority (should play)
     last_round = @event.rounds.order(number: :desc).first
 
     sorted = available.shuffle.sort_by do |ep|
       if last_round.nil?
         0
       elsif last_round.match_players.exists?(player_id: ep.player_id)
-        1  # played last round → higher sit-out priority
+        0  # played last round → lower sit-out priority (should play again)
       else
-        0  # sat out last round → lower sit-out priority (should play)
+        1  # sat out last round → higher sit-out priority (should sit again)
       end
     end
 
@@ -112,7 +112,10 @@ class MatchGenerator
     end
 
     # Distribute any overflow players (gender imbalance) into incomplete groups
-    overflow = (males[court_count * 2..] + females[court_count * 2..])
+    overflow_males = males[court_count * 2..] || []
+    overflow_females = females[court_count * 2..] || []
+    overflow = (overflow_males + overflow_females)
+                 .compact
                  .sort_by { |ep| -effective_rank(ep) }
 
     overflow.each do |ep|

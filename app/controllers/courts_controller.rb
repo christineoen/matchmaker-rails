@@ -4,7 +4,7 @@ class CourtsController < ApplicationController
   before_action :set_court, only: [ :edit, :update, :destroy ]
 
   def index
-    @courts = @club.courts
+    @courts = @club.courts.order(:created_at)
     @court = Court.new(club: @club)
   end
 

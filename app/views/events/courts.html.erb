@@ -24,10 +24,9 @@
                data-court-name="<%= court.name %>"
                data-court-surface="<%= court.surface %>"
                data-selected="<%= @selected_court_ids.include?(court.id) %>"
-               data-search="court <%= court.name %> <%= court.surface %>"
+               data-search="<%= court.name %> <%= court.surface %>"
                class="p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
-            <p class="text-sm font-medium text-gray-900">Court <%= court.name %></p>
-            <p class="text-xs text-gray-500 capitalize mt-0.5"><%= court.surface %></p>
+            <p><span class="text-sm font-medium text-gray-900"><%= court.name %></span><span class="text-xs text-gray-500 capitalize mt-0.5"> - <%= court.surface %></span></p>
           </div>
         <% end %>
       </div>
