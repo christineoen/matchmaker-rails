@@ -42,18 +42,6 @@ class EventTest < ActiveSupport::TestCase
     assert_equal 1, events(:event_riverside_unlabelled).gender_format_before_type_cast
   end
 
-  test "sets_played defaults to 0" do
-    event = valid_event
-    event.save!
-    assert_equal 0, event.sets_played
-  end
-
-  test "sets_played must be non-negative integer" do
-    event = valid_event.tap { |e| e.sets_played = -1 }
-    assert_not event.valid?
-    assert event.errors[:sets_played].any?
-  end
-
   test "belongs to club" do
     assert_equal clubs(:riverside), events(:event_riverside).club
   end

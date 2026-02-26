@@ -7,7 +7,6 @@
       <p class="text-sm text-gray-500">
         <%= @event.started_at.strftime("%-d %b %Y, %H:%M") %> &middot;
         <span class="capitalize"><%= @event.gender_format.tr("_", " ") %></span> &middot;
-        Sets played: <strong><%= @event.sets_played %></strong>
       </p>
     </div>
     <div class="flex gap-3">
@@ -50,7 +49,6 @@
             <th class="text-left py-2 font-medium text-gray-600">Offset</th>
             <th class="text-left py-2 font-medium text-gray-600">No hard</th>
             <th class="text-left py-2 font-medium text-gray-600">Sitting out</th>
-            <th class="text-left py-2 font-medium text-gray-600">Sat out last</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -90,13 +88,6 @@
                 <% end %>
               </td>
 
-              <td class="py-2 text-center">
-                <% if ep.sat_out_last_round? %>
-                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-400" title="Sat out last round"></span>
-                <% else %>
-                  <span class="text-gray-300">—</span>
-                <% end %>
-              </td>
             </tr>
           <% end %>
         </tbody>
