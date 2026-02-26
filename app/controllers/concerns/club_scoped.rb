@@ -9,7 +9,7 @@ module ClubScoped
   private
 
   def set_club
-    @club = current_user.clubs.find(params[:club_id])
+    @club = current_user.clubs.find_by!(slug: params[:club_id])
   end
 
   def require_club_admin

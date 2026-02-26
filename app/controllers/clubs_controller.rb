@@ -27,7 +27,7 @@ class ClubsController < ApplicationController
   private
 
   def set_club
-    @club = current_user.clubs.find(params[:id])
+    @club = current_user.clubs.find_by!(slug: params[:id])
   end
 
   def club_params
