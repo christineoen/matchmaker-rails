@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       member do
         get  :courts
         patch :courts, action: :update_courts
-        get  :players_setup
+        get :players_setup
         patch :players_setup, action: :update_players_setup
       end
       resources :event_players, only: [ :create, :update, :destroy ]
