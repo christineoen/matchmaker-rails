@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_26_070109) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_26_082229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -46,7 +46,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_26_070109) do
     t.bigint "event_id", null: false
     t.bigint "player_id", null: false
     t.boolean "sitting_out", default: false, null: false
-    t.boolean "sat_out_last_round", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_id", "player_id"], name: "index_event_players_on_event_id_and_player_id", unique: true
@@ -59,7 +58,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_26_070109) do
     t.string "label"
     t.datetime "started_at", null: false
     t.integer "gender_format", null: false
-    t.integer "sets_played", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["club_id"], name: "index_events_on_club_id"

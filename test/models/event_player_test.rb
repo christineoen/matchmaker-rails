@@ -15,12 +15,6 @@ class EventPlayerTest < ActiveSupport::TestCase
     assert_not ep.sitting_out?
   end
 
-  test "sat_out_last_round defaults to false" do
-    ep = valid_event_player
-    ep.save!
-    assert_not ep.sat_out_last_round?
-  end
-
   test "prevents duplicate player in same event" do
     duplicate = EventPlayer.new(event: events(:event_riverside), player: players(:alice_riverside))
     assert_not duplicate.valid?
@@ -32,15 +26,13 @@ class EventPlayerTest < ActiveSupport::TestCase
     assert ep.valid?
   end
 
-  test "fixture: bob is sitting out and sat out last round" do
+  test "fixture: bob is sitting out" do
     ep = event_players(:event_player_bob)
     assert ep.sitting_out?
-    assert ep.sat_out_last_round?
   end
 
   test "fixture: alice is not sitting out" do
     ep = event_players(:event_player_alice)
     assert_not ep.sitting_out?
-    assert_not ep.sat_out_last_round?
   end
 end

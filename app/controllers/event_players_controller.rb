@@ -31,6 +31,6 @@ class EventPlayersController < ApplicationController
   end
 
   def event_player_params
-    params.expect(event_player: [ :sitting_out, :sat_out_last_round ])
+    params.expect(event_player: [ :sitting_out ])
   end
 end
