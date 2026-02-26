@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_25_155618) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_26_060445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,7 +26,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_25_155618) do
     t.bigint "club_id", null: false
     t.string "name", null: false
     t.string "surface", null: false
-    t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["club_id", "name"], name: "index_courts_on_club_id_and_name", unique: true
@@ -58,13 +57,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_25_155618) do
   create_table "players", force: :cascade do |t|
     t.bigint "club_id", null: false
     t.bigint "user_id"
-    t.string "first_name", null: false
-    t.string "last_name", null: false
     t.integer "gender", null: false
     t.bigint "grade_level_id"
-    t.integer "plus_minus", default: 0, null: false
+    t.decimal "grade_offset", precision: 3, scale: 1, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "avoids_hard_courts", default: false, null: false
+    t.string "name", null: false
     t.index ["club_id", "user_id"], name: "index_players_on_club_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["club_id"], name: "index_players_on_club_id"
     t.index ["grade_level_id"], name: "index_players_on_grade_level_id"

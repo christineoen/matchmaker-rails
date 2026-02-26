@@ -1,0 +1,19 @@
+<div class="w-full max-w-xl">
+  <h1 class="font-bold text-3xl mb-1">Create a club</h1>
+  <p class="text-sm text-gray-500 mb-8">You can import grade levels, courts, and players after setup.</p>
+
+  <%= render "shared/errors", object: @club %>
+
+  <%= form_with model: @club do |f| %>
+    <div class="mb-8">
+      <%= f.label :name, "Club name", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :name, required: true, autofocus: true, placeholder: "e.g. Riverside Tennis Club",
+          class: "block w-full shadow-sm rounded-md border border-gray-300 focus:outline-blue-600 px-3 py-2" %>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <%= f.submit "Create club", class: "px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-md cursor-pointer" %>
+      <%= link_to "Cancel", clubs_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+    </div>
+  <% end %>
+</div>

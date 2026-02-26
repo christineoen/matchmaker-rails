@@ -2,23 +2,17 @@ require "test_helper"
 
 class PlayerTest < ActiveSupport::TestCase
   def valid_player
-    Player.new(club: clubs(:riverside), first_name: "Jane", last_name: "Doe", gender: :female)
+    Player.new(club: clubs(:riverside), name: "Jane Doe", gender: :female)
   end
 
   test "valid with required attributes" do
     assert valid_player.valid?
   end
 
-  test "invalid without first_name" do
-    player = valid_player.tap { |p| p.first_name = nil }
+  test "invalid without name" do
+    player = valid_player.tap { |p| p.name = nil }
     assert_not player.valid?
-    assert_includes player.errors[:first_name], "can't be blank"
-  end
-
-  test "invalid without last_name" do
-    player = valid_player.tap { |p| p.last_name = nil }
-    assert_not player.valid?
-    assert_includes player.errors[:last_name], "can't be blank"
+    assert_includes player.errors[:name], "can't be blank"
   end
 
   test "invalid without gender" do
@@ -40,18 +34,18 @@ class PlayerTest < ActiveSupport::TestCase
   end
 
   test "prevents duplicate user within same club" do
-    duplicate = Player.new(club: clubs(:riverside), user: users(:alice), first_name: "Other", last_name: "Name", gender: :female)
+    duplicate = Player.new(club: clubs(:riverside), user: users(:alice), name: "Other Name", gender: :female)
     assert_not duplicate.valid?
     assert duplicate.errors[:user_id].any?
   end
 
   test "same user can have a player in a different club" do
-    player = Player.new(club: clubs(:harbour), user: users(:alice), first_name: "Alice", last_name: "Admin", gender: :female)
+    player = Player.new(club: clubs(:harbour), user: users(:alice), name: "Alice Admin", gender: :female)
     assert player.valid?
   end
 
-  test "full_name returns first and last name" do
-    assert_equal "Alice Admin", players(:alice_riverside).full_name
+  test "name is stored and returned directly" do
+    assert_equal "Alice Admin", players(:alice_riverside).name
   end
 
   test "gender enum: male is 0, female is 1" do
@@ -59,14 +53,41 @@ class PlayerTest < ActiveSupport::TestCase
     assert_equal 1, players(:alice_riverside).gender_before_type_cast
   end
 
-  test "plus_minus defaults to neutral (0)" do
+  test "grade_offset defaults to 0" do
     player = valid_player
     player.save!
-    assert_equal 0, player.plus_minus_before_type_cast
+    assert_equal 0, player.grade_offset
   end
 
-  test "plus_minus enum values" do
-    assert players(:bob_riverside).plus?
-    assert players(:unlinked_player).neutral?
+  test "grade_offset accepts values between -0.4 and 0.4 inclusive" do
+    [ -0.4, -0.1, 0, 0.1, 0.4 ].each do |value|
+      player = valid_player.tap { |p| p.grade_offset = value }
+      assert player.valid?, "Expected grade_offset #{value} to be valid"
+    end
+  end
+
+  test "grade_offset rejects values outside -0.4..0.4" do
+    [ -0.5, -1, 0.5, 1 ].each do |value|
+      player = valid_player.tap { |p| p.grade_offset = value }
+      assert_not player.valid?, "Expected grade_offset #{value} to be invalid"
+      assert player.errors[:grade_offset].any?
+    end
+  end
+
+  test "grade_offset stores the decimal value" do
+    assert_equal 0.1, players(:bob_riverside).grade_offset
+    assert_equal 0,   players(:unlinked_player).grade_offset
+  end
+
+  test "avoids_hard_courts defaults to false" do
+    player = valid_player
+    player.save!
+    assert_not player.avoids_hard_courts?
+  end
+
+  test "avoids_hard_courts can be set to true" do
+    player = valid_player.tap { |p| p.avoids_hard_courts = true }
+    assert player.valid?
+    assert player.avoids_hard_courts?
   end
 end

@@ -1,11 +1,15 @@
 <div class="w-full">
-  <h1 class="font-bold text-4xl mb-6">Your clubs</h1>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="font-bold text-4xl">Your clubs</h1>
+    <%= link_to "New club", new_club_path, class: "px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-md" %>
+  </div>
 
   <% if @clubs.any? %>
     <ul class="divide-y divide-gray-200 border border-gray-200 rounded-lg">
       <% @clubs.each do |club| %>
-        <li class="px-5 py-4">
+        <li class="px-5 py-4 flex items-center justify-between">
           <span class="font-medium text-gray-900"><%= club.name %></span>
+          <%= link_to "Manage →", club_path(club), class: "text-sm text-blue-600 hover:text-blue-500" %>
         </li>
       <% end %>
     </ul>

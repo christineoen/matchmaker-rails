@@ -1,0 +1,21 @@
+<div class="w-full max-w-2xl">
+  <h1 class="font-bold text-3xl mb-1"><%= @club.name %></h1>
+  <p class="text-sm text-gray-500 mb-6">Club setup</p>
+
+  <%= render "shared/club_setup_nav", club: @club %>
+
+  <div class="grid grid-cols-3 gap-4">
+    <%= link_to club_grade_levels_path(@club), class: "block border border-gray-200 rounded-lg p-5 hover:border-blue-300 hover:bg-blue-50 transition-colors" do %>
+      <p class="text-3xl font-bold text-gray-900"><%= @club.grade_levels.count %></p>
+      <p class="text-sm font-medium text-gray-600 mt-1">Grade levels</p>
+    <% end %>
+    <%= link_to club_courts_path(@club), class: "block border border-gray-200 rounded-lg p-5 hover:border-blue-300 hover:bg-blue-50 transition-colors" do %>
+      <p class="text-3xl font-bold text-gray-900"><%= @club.courts.count %></p>
+      <p class="text-sm font-medium text-gray-600 mt-1">Courts</p>
+    <% end %>
+    <%= link_to club_players_path(@club), class: "block border border-gray-200 rounded-lg p-5 hover:border-blue-300 hover:bg-blue-50 transition-colors" do %>
+      <p class="text-3xl font-bold text-gray-900"><%= @club.players.count %></p>
+      <p class="text-sm font-medium text-gray-600 mt-1">Players</p>
+    <% end %>
+  </div>
+</div>

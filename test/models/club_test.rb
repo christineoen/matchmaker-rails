@@ -15,10 +15,16 @@ class ClubTest < ActiveSupport::TestCase
     assert_includes club.errors[:name], "can't be blank"
   end
 
-  test "auto-generates slug from name" do
+  test "auto-generates slug from first word of name with random suffix" do
     club = valid_club
     club.valid?
-    assert_equal "new-tennis-club", club.slug
+    assert_match(/\Anew-[a-z0-9]{6}\z/, club.slug)
+  end
+
+  test "two clubs with the same name get different slugs" do
+    club1 = Club.create!(name: "Tennis Club")
+    club2 = Club.create!(name: "Tennis Club")
+    assert_not_equal club1.slug, club2.slug
   end
 
   test "slug is not overwritten if already set" do

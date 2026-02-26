@@ -1,0 +1,50 @@
+<div class="w-full max-w-2xl">
+  <h1 class="font-bold text-3xl mb-1"><%= @club.name %></h1>
+  <p class="text-sm text-gray-500 mb-6">Club setup</p>
+
+  <%= render "shared/club_setup_nav", club: @club %>
+
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold text-gray-900">Grade levels</h2>
+  </div>
+
+  <p class="text-sm text-gray-500 mb-4">Higher rank = stronger player. Used to balance matches.</p>
+
+  <% if @grade_levels.any? %>
+    <table class="w-full text-sm mb-6">
+      <thead>
+        <tr class="border-b border-gray-200">
+          <th class="text-left py-2 pr-4 font-medium text-gray-600 w-16">Rank</th>
+          <th class="text-left py-2 font-medium text-gray-600">Name</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <% @grade_levels.each do |gl| %>
+          <tr>
+            <td class="py-2 pr-4 text-gray-500"><%= gl.rank %></td>
+            <td class="py-2 font-medium text-gray-900"><%= gl.name %></td>
+            <td class="py-2 text-right space-x-3">
+              <%= link_to "Edit", edit_club_grade_level_path(@club, gl), class: "text-blue-600 hover:text-blue-500" %>
+              <%= button_to "Remove", club_grade_level_path(@club, gl), method: :delete,
+                  data: { turbo_confirm: "Remove #{gl.name}?" },
+                  class: "text-red-500 hover:text-red-400 bg-transparent border-0 cursor-pointer text-sm p-0" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-400 text-sm mb-6">No grade levels yet.</p>
+  <% end %>
+
+  <div class="border-t border-gray-200 pt-5">
+    <p class="text-sm font-medium text-gray-700 mb-3">Add grade level</p>
+    <%= render "form", club: @club, grade_level: @grade_level %>
+  </div>
+
+  <%= render "shared/csv_import",
+      import_url: import_club_grade_levels_path(@club),
+      columns: %w[rank name],
+      example: "rank,name\n1,Grade 5\n2,Grade 4\n3,Grade 3" %>
+</div>
