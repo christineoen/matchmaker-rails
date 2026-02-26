@@ -1,0 +1,9 @@
+match_player_alice:
+  match: match1_riverside
+  player: alice_riverside
+  team: 0
+
+match_player_bob:
+  match: match1_riverside
+  player: bob_riverside
+  team: 1

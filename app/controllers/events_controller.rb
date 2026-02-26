@@ -65,6 +65,7 @@ class EventsController < ApplicationController
 
   def show
     @event_players = @event.event_players.includes(player: :grade_level).order("players.name")
+    @rounds = @event.rounds.order(:number).includes(matches: [ :court, { match_players: { player: :grade_level } } ])
   end
 
   def destroy

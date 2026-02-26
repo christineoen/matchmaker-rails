@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_26_082229) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_26_090002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -74,6 +74,26 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_26_082229) do
     t.index ["club_id"], name: "index_grade_levels_on_club_id"
   end
 
+  create_table "match_players", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "player_id", null: false
+    t.integer "team", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["match_id", "player_id"], name: "index_match_players_on_match_id_and_player_id", unique: true
+    t.index ["match_id"], name: "index_match_players_on_match_id"
+    t.index ["player_id"], name: "index_match_players_on_player_id"
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.bigint "round_id", null: false
+    t.bigint "court_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["court_id"], name: "index_matches_on_court_id"
+    t.index ["round_id"], name: "index_matches_on_round_id"
+  end
+
   create_table "memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "club_id", null: false
@@ -99,6 +119,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_26_082229) do
     t.index ["club_id"], name: "index_players_on_club_id"
     t.index ["grade_level_id"], name: "index_players_on_grade_level_id"
     t.index ["user_id"], name: "index_players_on_user_id"
+  end
+
+  create_table "rounds", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.integer "number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "number"], name: "index_rounds_on_event_id_and_number", unique: true
+    t.index ["event_id"], name: "index_rounds_on_event_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -127,10 +156,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_26_082229) do
   add_foreign_key "event_players", "players"
   add_foreign_key "events", "clubs"
   add_foreign_key "grade_levels", "clubs"
+  add_foreign_key "match_players", "matches"
+  add_foreign_key "match_players", "players"
+  add_foreign_key "matches", "courts"
+  add_foreign_key "matches", "rounds"
   add_foreign_key "memberships", "clubs"
   add_foreign_key "memberships", "users"
   add_foreign_key "players", "clubs"
   add_foreign_key "players", "grade_levels"
   add_foreign_key "players", "users"
+  add_foreign_key "rounds", "events"
   add_foreign_key "sessions", "users"
 end
