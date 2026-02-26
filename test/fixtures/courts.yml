@@ -2,16 +2,13 @@ court1_riverside:
   club: riverside
   name: "1"
   surface: grass
-  position: 1
 
 court2_riverside:
   club: riverside
   name: "2"
   surface: grass
-  position: 2
 
 court1_harbour:
   club: harbour
   name: "1"
   surface: hard
-  position: 1

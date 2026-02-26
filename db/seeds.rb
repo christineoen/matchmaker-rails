@@ -19,14 +19,13 @@ grades = club.grade_levels.ordered.to_a
 
 # Courts
 [
-  { name: "1", surface: "grass", position: 1 },
-  { name: "2", surface: "grass", position: 2 },
-  { name: "3", surface: "grass", position: 3 },
-  { name: "4", surface: "hard", position: 4 }
+  { name: "1", surface: "grass" },
+  { name: "2", surface: "grass" },
+  { name: "3", surface: "grass" },
+  { name: "4", surface: "hard" }
 ].each do |attrs|
   Court.find_or_create_by!(club: club, name: attrs[:name]) do |c|
     c.surface = attrs[:surface]
-    c.position = attrs[:position]
   end
 end
 
@@ -40,19 +39,19 @@ Membership.find_or_create_by!(user: admin, club: club) { |m| m.role = :admin }
 
 # Sample players
 [
-  { first_name: "Bob",   last_name: "Smith",   gender: :male,   grade: grades[4], plus_minus: :neutral },
-  { first_name: "Carol", last_name: "Jones",   gender: :female, grade: grades[3], plus_minus: :plus },
-  { first_name: "Dave",  last_name: "Brown",   gender: :male,   grade: grades[3], plus_minus: :minus },
-  { first_name: "Eve",   last_name: "Wilson",  gender: :female, grade: grades[2], plus_minus: :neutral },
-  { first_name: "Frank", last_name: "Taylor",  gender: :male,   grade: grades[2], plus_minus: :neutral },
-  { first_name: "Grace", last_name: "Lee",     gender: :female, grade: grades[1], plus_minus: :plus },
-  { first_name: "Hank",  last_name: "Martin",  gender: :male,   grade: grades[1], plus_minus: :neutral },
-  { first_name: "Ivy",   last_name: "Clark",   gender: :female, grade: grades[0], plus_minus: :minus }
+  { name: "Bob Smith",   gender: :male,   grade: grades[4], grade_offset: 0 },
+  { name: "Carol Jones", gender: :female, grade: grades[3], grade_offset: 0.1 },
+  { name: "Dave Brown",  gender: :male,   grade: grades[3], grade_offset: -0.1 },
+  { name: "Eve Wilson",  gender: :female, grade: grades[2], grade_offset: 0 },
+  { name: "Frank Taylor", gender: :male,  grade: grades[2], grade_offset: 0 },
+  { name: "Grace Lee",   gender: :female, grade: grades[1], grade_offset: 0.1 },
+  { name: "Hank Martin", gender: :male,   grade: grades[1], grade_offset: 0 },
+  { name: "Ivy Clark",   gender: :female, grade: grades[0], grade_offset: -0.1 }
 ].each do |attrs|
-  Player.find_or_create_by!(club: club, first_name: attrs[:first_name], last_name: attrs[:last_name]) do |p|
+  Player.find_or_create_by!(club: club, name: attrs[:name]) do |p|
     p.gender = attrs[:gender]
     p.grade_level = attrs[:grade]
-    p.plus_minus = attrs[:plus_minus]
+    p.grade_offset = attrs[:grade_offset]
   end
 end
 

@@ -10,9 +10,17 @@ class Club < ApplicationRecord
 
   before_validation :generate_slug, if: -> { slug.blank? && name.present? }
 
+  def to_param
+    slug
+  end
+
   private
 
   def generate_slug
-    self.slug = name.downcase.strip.gsub(/[^a-z0-9\s-]/, "").gsub(/\s+/, "-").squeeze("-")
+    base = name.strip.split.first.downcase.gsub(/[^a-z0-9]/, "")
+    loop do
+      candidate = "#{base}-#{SecureRandom.alphanumeric(6).downcase}"
+      break self.slug = candidate unless Club.exists?(slug: candidate)
+    end
   end
 end

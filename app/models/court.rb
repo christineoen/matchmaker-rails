@@ -3,7 +3,5 @@ class Court < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { scope: :club_id }
   validates :surface, presence: true
-  validates :position, presence: true, numericality: { only_integer: true }
-
-  default_scope { order(:position) }
+  default_scope { order(:name) }
 end
