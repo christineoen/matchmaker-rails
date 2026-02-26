@@ -24,6 +24,7 @@ Rails.application.routes.draw do
         patch :players_setup, action: :update_players_setup
       end
       resources :event_players, only: [ :create, :update, :destroy ]
+      resources :rounds, only: [ :create, :destroy ]
     end
   end
 
