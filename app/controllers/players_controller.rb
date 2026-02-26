@@ -27,7 +27,7 @@ class PlayersController < ApplicationController
 
   def update
     if @player.update(player_params)
-      redirect_to club_players_path(@club), notice: "#{@player.name} updated."
+      redirect_back_or_to club_players_path(@club), notice: "#{@player.name} updated."
     else
       render :edit, status: :unprocessable_entity
     end

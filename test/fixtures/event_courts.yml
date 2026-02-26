@@ -1,0 +1,7 @@
+event_court1:
+  event: event_riverside
+  court: court1_riverside
+
+event_court2:
+  event: event_riverside
+  court: court2_riverside

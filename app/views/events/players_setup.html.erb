@@ -1,0 +1,98 @@
+<div class="w-full max-w-2xl pb-20" data-controller="player-picker">
+  <%= render "steps", club: @club, event: @event, current_step: 3 %>
+
+  <h2 class="text-lg font-semibold text-gray-900 mb-5">Select players</h2>
+
+  <%= form_with url: players_setup_club_event_path(@club, @event), method: :patch, id: "step-form" do %>
+
+    <%# Selected players list %>
+    <div class="mb-6">
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Selected</p>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="text-left py-2 font-medium text-gray-600">Name</th>
+            <th class="text-left py-2 font-medium text-gray-600">Grade</th>
+            <th class="text-left py-2 font-medium text-gray-600">Offset</th>
+            <th class="text-left py-2 font-medium text-gray-600">No hard courts</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody data-player-picker-target="selectedPlayers" class="divide-y divide-gray-100">
+          <tr data-player-picker-target="noMessage">
+            <td colspan="5" class="py-3 text-sm text-gray-400">No players selected yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <%# Player row templates %>
+    <% @players.each do |player| %>
+      <template id="player-tpl-<%= player.id %>">
+        <tr data-player-row="<%= player.id %>">
+          <td class="py-2 pr-3">
+            <input type="hidden" name="player_ids[]" value="<%= player.id %>">
+            <p class="text-sm font-medium text-gray-900"><%= player.name %></p>
+            <p class="text-xs text-gray-500 capitalize"><%= player.gender %></p>
+          </td>
+          <td class="py-2 pr-3">
+            <select name="player_edits[<%= player.id %>][grade_level_id]"
+                    class="text-sm border border-gray-300 rounded-md px-2 py-1 bg-white focus:outline-blue-600">
+              <option value="">No grade</option>
+              <% @grade_levels.each do |gl| %>
+                <option value="<%= gl.id %>" <%= player.grade_level_id == gl.id ? "selected" : "" %>><%= gl.name %></option>
+              <% end %>
+            </select>
+          </td>
+          <td class="py-2 pr-3">
+            <input type="number" name="player_edits[<%= player.id %>][grade_offset]"
+                   value="<%= player.grade_offset %>" min="-0.4" max="0.4" step="0.1"
+                   class="w-16 text-sm border border-gray-300 rounded-md px-2 py-1 text-center focus:outline-blue-600">
+          </td>
+          <td class="py-2 pr-3">
+            <input type="hidden" name="player_edits[<%= player.id %>][avoids_hard_courts]" value="0">
+            <input type="checkbox" name="player_edits[<%= player.id %>][avoids_hard_courts]" value="1"
+                   <%= player.avoids_hard_courts? ? "checked" : "" %>
+                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          </td>
+          <td class="py-2 text-right">
+            <button type="button"
+                    data-action="player-picker#deselect"
+                    data-player-picker-id-param="<%= player.id %>"
+                    class="text-gray-400 hover:text-gray-700 text-xl font-bold leading-none">&times;</button>
+          </td>
+        </tr>
+      </template>
+    <% end %>
+
+    <input type="text" placeholder="Search players…"
+           data-action="input->player-picker#search"
+           class="block w-full mb-3 shadow-sm rounded-md border border-gray-300 focus:outline-blue-600 px-3 py-2 text-sm">
+
+    <% if @players.any? %>
+      <div class="grid grid-cols-3 gap-3">
+        <% @players.each do |player| %>
+          <% grade_text = player.grade_level&.name || "No grade" %>
+          <% offset_text = player.grade_offset != 0 ? " (#{player.grade_offset > 0 ? "+#{player.grade_offset}" : player.grade_offset})" : "" %>
+          <div data-player-picker-target="playerCard"
+               data-action="click->player-picker#select"
+               data-player-id="<%= player.id %>"
+               data-selected="<%= @selected_player_ids.include?(player.id) %>"
+               data-search="<%= player.name %> <%= player.gender %> <%= grade_text %>"
+               class="p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
+            <p class="text-sm font-medium text-gray-900"><%= player.name %></p>
+            <p class="text-xs text-gray-500 capitalize mt-0.5"><%= player.gender %></p>
+            <p class="text-xs text-gray-500 mt-0.5"><%= grade_text %><%= offset_text %></p>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400">No players set up yet. <%= link_to "Add players", club_players_path(@club), class: "text-blue-600 hover:text-blue-500" %>.</p>
+    <% end %>
+  <% end %>
+</div>
+
+<%= render "step_footer",
+    back_path: courts_club_event_path(@club, @event),
+    back_label: "← Courts",
+    next_label: "Start event →" %>

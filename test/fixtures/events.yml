@@ -1,0 +1,12 @@
+event_riverside:
+  club: riverside
+  label: Tuesday Night Doubles
+  started_at: 2026-02-25 18:00:00
+  gender_format: 0
+  sets_played: 2
+
+event_riverside_unlabelled:
+  club: riverside
+  started_at: 2026-02-18 18:00:00
+  gender_format: 1
+  sets_played: 0

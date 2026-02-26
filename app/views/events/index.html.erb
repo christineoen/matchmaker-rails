@@ -1,0 +1,46 @@
+<div class="w-full max-w-3xl">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="font-bold text-3xl mb-1"><%= @club.name %></h1>
+      <p class="text-sm text-gray-500">Events</p>
+    </div>
+    <%= link_to "New event", new_club_event_path(@club),
+        class: "px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-md" %>
+  </div>
+
+  <% if @events.any? %>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-gray-200">
+          <th class="text-left py-2 font-medium text-gray-600">Session</th>
+          <th class="text-left py-2 font-medium text-gray-600">Format</th>
+          <th class="text-left py-2 font-medium text-gray-600">Date</th>
+          <th class="text-left py-2 font-medium text-gray-600">Courts</th>
+          <th class="text-left py-2 font-medium text-gray-600">Players</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <% @events.each do |event| %>
+          <tr>
+            <td class="py-2 font-medium text-gray-900">
+              <%= link_to event.label.presence || "Session", club_event_path(@club, event),
+                  class: "text-blue-600 hover:text-blue-500" %>
+            </td>
+            <td class="py-2 text-gray-600 capitalize"><%= event.gender_format.tr("_", " ") %></td>
+            <td class="py-2 text-gray-600"><%= event.started_at.strftime("%-d %b %Y, %H:%M") %></td>
+            <td class="py-2 text-gray-600"><%= event.event_courts.count %></td>
+            <td class="py-2 text-gray-600"><%= event.event_players.count %></td>
+            <td class="py-2 text-right">
+              <%= button_to "Delete", club_event_path(@club, event), method: :delete,
+                  data: { turbo_confirm: "Delete this event?" },
+                  class: "text-red-500 hover:text-red-400 bg-transparent border-0 cursor-pointer text-sm p-0" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-400 text-sm">No events yet.</p>
+  <% end %>
+</div>

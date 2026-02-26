@@ -6,6 +6,7 @@ class ClubsController < ApplicationController
   end
 
   def show
+    @events = @club.events.order(started_at: :desc)
   end
 
   def new

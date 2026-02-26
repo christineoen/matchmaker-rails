@@ -4,6 +4,7 @@ class Club < ApplicationRecord
   has_many :players, dependent: :destroy
   has_many :courts, dependent: :destroy
   has_many :grade_levels, dependent: :destroy
+  has_many :events, dependent: :destroy
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9-]+\z/, message: "only lowercase letters, numbers, and hyphens" }
