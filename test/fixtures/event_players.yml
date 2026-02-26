@@ -1,0 +1,11 @@
+event_player_alice:
+  event: event_riverside
+  player: alice_riverside
+  sitting_out: false
+  sat_out_last_round: false
+
+event_player_bob:
+  event: event_riverside
+  player: bob_riverside
+  sitting_out: true
+  sat_out_last_round: true

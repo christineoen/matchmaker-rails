@@ -1,0 +1,43 @@
+<div class="w-full max-w-xl pb-20" data-controller="court-picker">
+  <%= render "steps", club: @club, event: @event, current_step: 2 %>
+
+  <h2 class="text-lg font-semibold text-gray-900 mb-5">Select courts</h2>
+
+  <%= form_with url: courts_club_event_path(@club, @event), method: :patch, id: "step-form" do %>
+    <div class="mb-6">
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Selected</p>
+      <div data-court-picker-target="selectedCourts" class="flex flex-wrap gap-2 min-h-[2.5rem]">
+        <p data-court-picker-target="noMessage" class="text-sm text-gray-400">No courts selected yet.</p>
+      </div>
+    </div>
+
+    <% if @courts.any? %>
+      <input type="text" placeholder="Search courts…"
+             data-action="input->court-picker#search"
+             class="block w-full mb-3 shadow-sm rounded-md border border-gray-300 focus:outline-blue-600 px-3 py-2 text-sm">
+
+      <div class="grid grid-cols-3 gap-3">
+        <% @courts.each do |court| %>
+          <div data-court-picker-target="courtCard"
+               data-action="click->court-picker#select"
+               data-court-id="<%= court.id %>"
+               data-court-name="<%= court.name %>"
+               data-court-surface="<%= court.surface %>"
+               data-selected="<%= @selected_court_ids.include?(court.id) %>"
+               data-search="court <%= court.name %> <%= court.surface %>"
+               class="p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
+            <p class="text-sm font-medium text-gray-900">Court <%= court.name %></p>
+            <p class="text-xs text-gray-500 capitalize mt-0.5"><%= court.surface %></p>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400">No courts set up yet. <%= link_to "Add courts", club_courts_path(@club), class: "text-blue-600 hover:text-blue-500" %>.</p>
+    <% end %>
+  <% end %>
+</div>
+
+<%= render "step_footer",
+    back_path: edit_club_event_path(@club, @event),
+    back_label: "← Game",
+    next_label: "Next: Players →" %>

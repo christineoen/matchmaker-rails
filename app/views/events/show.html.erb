@@ -1,0 +1,108 @@
+<div class="w-full max-w-3xl">
+  <%= render "steps", club: @club, event: @event, current_step: 4 %>
+
+  <div class="flex items-start justify-between mb-6">
+    <div>
+      <h1 class="font-bold text-3xl mb-1"><%= @event.label.presence || "Session" %></h1>
+      <p class="text-sm text-gray-500">
+        <%= @event.started_at.strftime("%-d %b %Y, %H:%M") %> &middot;
+        <span class="capitalize"><%= @event.gender_format.tr("_", " ") %></span> &middot;
+        Sets played: <strong><%= @event.sets_played %></strong>
+      </p>
+    </div>
+    <div class="flex gap-3">
+      <%= link_to "All events", club_events_path(@club), class: "text-sm text-gray-500 hover:text-gray-700" %>
+      <%= button_to "Delete", club_event_path(@club, @event), method: :delete,
+          data: { turbo_confirm: "Delete this event? This cannot be undone." },
+          class: "text-sm text-red-500 hover:text-red-400 bg-transparent border-0 cursor-pointer p-0" %>
+    </div>
+  </div>
+
+  <%# Courts %>
+  <section class="mb-8">
+    <h2 class="text-base font-semibold text-gray-900 mb-3">Courts</h2>
+    <% if @event.courts.any? %>
+      <div class="flex flex-wrap gap-2">
+        <% @event.courts.each do |court| %>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+            Court <%= court.name %> <span class="ml-1 text-gray-400 capitalize">(<%= court.surface %>)</span>
+          </span>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400">No courts. <%= link_to "Select courts", courts_club_event_path(@club, @event), class: "text-blue-600 hover:text-blue-500" %>.</p>
+    <% end %>
+  </section>
+
+  <%# Players %>
+  <section class="mb-8">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-base font-semibold text-gray-900">Players (<%= @event_players.count %>)</h2>
+      <%= link_to "Edit player list", players_setup_club_event_path(@club, @event), class: "text-sm text-blue-600 hover:text-blue-500" %>
+    </div>
+
+    <% if @event_players.any? %>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="text-left py-2 font-medium text-gray-600">Name</th>
+            <th class="text-left py-2 font-medium text-gray-600">Grade</th>
+            <th class="text-left py-2 font-medium text-gray-600">Offset</th>
+            <th class="text-left py-2 font-medium text-gray-600">No hard</th>
+            <th class="text-left py-2 font-medium text-gray-600">Sitting out</th>
+            <th class="text-left py-2 font-medium text-gray-600">Sat out last</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <% @event_players.each do |ep| %>
+            <% player = ep.player %>
+            <tr>
+              <td class="py-2 font-medium text-gray-900"><%= player.name %></td>
+              <td class="py-2 text-gray-600"><%= player.grade_level&.name || "—" %></td>
+
+              <td class="py-2">
+                <%= form_with url: club_player_path(@club, player), method: :patch, class: "inline" do |f| %>
+                  <%= f.number_field :grade_offset, value: player.grade_offset,
+                      min: -0.4, max: 0.4, step: 0.1,
+                      name: "player[grade_offset]",
+                      onchange: "this.form.requestSubmit()",
+                      class: "w-16 text-sm border border-gray-300 rounded px-1 py-0.5 text-center" %>
+                <% end %>
+              </td>
+
+              <td class="py-2">
+                <%= form_with url: club_player_path(@club, player), method: :patch, class: "inline" do |f| %>
+                  <input type="hidden" name="player[avoids_hard_courts]" value="0">
+                  <input type="checkbox" name="player[avoids_hard_courts]" value="1"
+                         <%= player.avoids_hard_courts? ? "checked" : "" %>
+                         onchange="this.form.requestSubmit()"
+                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <% end %>
+              </td>
+
+              <td class="py-2">
+                <%= form_with url: club_event_event_player_path(@club, @event, ep), method: :patch, class: "inline" do |f| %>
+                  <input type="hidden" name="event_player[sitting_out]" value="0">
+                  <input type="checkbox" name="event_player[sitting_out]" value="1"
+                         <%= ep.sitting_out? ? "checked" : "" %>
+                         onchange="this.form.requestSubmit()"
+                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <% end %>
+              </td>
+
+              <td class="py-2 text-center">
+                <% if ep.sat_out_last_round? %>
+                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-400" title="Sat out last round"></span>
+                <% else %>
+                  <span class="text-gray-300">—</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-sm text-gray-400">No players. <%= link_to "Add players", players_setup_club_event_path(@club, @event), class: "text-blue-600 hover:text-blue-500" %>.</p>
+    <% end %>
+  </section>
+</div>

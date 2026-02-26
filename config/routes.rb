@@ -16,6 +16,15 @@ Rails.application.routes.draw do
     resources :players, except: :show do
       collection { post :import }
     end
+    resources :events, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
+      member do
+        get  :courts
+        patch :courts, action: :update_courts
+        get :players_setup
+        patch :players_setup, action: :update_players_setup
+      end
+      resources :event_players, only: [ :create, :update, :destroy ]
+    end
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
